@@ -26,7 +26,7 @@ public class SenderInServer {
 
         senderIn.send(testInMessage);
 
-        return Response.accepted("SEND: "+testInMessage.getAccount()).build();
+        return Response.accepted("{\"send\": \""+testInMessage.getAccount()+"\"}").build();
     }
 
 }

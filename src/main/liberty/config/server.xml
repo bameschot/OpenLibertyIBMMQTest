@@ -35,6 +35,7 @@
         <properties.IbmWQMResourceAdapter
                             queueManager="QM1"
                             transportType="CLIENT"
+                            channel="DEV.APP.SVRCONN"
         />
     </jmsConnectionFactory>
 
