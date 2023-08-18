@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="test-server">
+
+    <featureManager>
+        <!-- Java EE features -->
+        <feature>cdi-2.0</feature>
+        <feature>ejb-3.2</feature>
+
+        <!-- Rest Interface -->
+        <feature>jaxrs-2.1</feature>
+        <feature>jsonb-1.0</feature>
+        <feature>mpOpenAPI-2.0</feature>
+
+
+        <!-- Message Driven Bean -->
+        <feature>wasJmsClient-2.0</feature>
+        <feature>mdb-3.2</feature>
+    </featureManager>
+
+    <httpEndpoint httpPort="9080"
+                  httpsPort="9443"
+                  id="defaultHttpEndpoint"
+                  host="*"/>
+
+    <!-- JMS CONFIGURATION -->
+
+    <resourceAdapter id="IbmWQMResourceAdapter" location="${server.config.dir}/lib/wmq.jmsra-9.0.4.0.rar">
+    </resourceAdapter>
+
+    <authData id="jmsAuth" user="app" password="app_1338"/>
+
+    <jmsConnectionFactory jndiName="jms/queueCF" id="jms/queueCF" containerAuthDataRef="jmsAuth">
+        <connectionManager maxPoolSize="6"
+                           connectionTimeout="7s"/>
+        <properties.IbmWQMResourceAdapter
+                            queueManager="QM1"
+                            transportType="CLIENT"
+        />
+    </jmsConnectionFactory>
+
+    <jmsQueue id="jms/test/in/queue" jndiName="jms/test/in/queue">
+        <properties.IbmWQMResourceAdapter
+                baseQueueName="Q.TEST.IN"
+                baseQueueManagerName="QM1"
+        />
+    </jmsQueue>
+
+    <jmsQueue id="jms/test/out/queue" jndiName="jms/test/out/queue">
+        <properties.IbmWQMResourceAdapter
+                baseQueueName="Q.TEST.OUT"
+                baseQueueManagerName="QM1"
+        />
+    </jmsQueue>
+
+    <jmsActivationSpec id="open-Liberty-ibm-mq-test/ReceiverInMDB" authDataRef="jmsAuth">
+        <properties.IbmWQMResourceAdapter
+                destinationRef="jms/test/in/queue"
+                destinationType="javax.jms.Queue"
+                transportType="CLIENT"
+                channel="DEV.APP.SVRCONN"
+                hostName="127.0.0.1"
+                port="1414"
+                applicationName="CCPMDB"
+                maxPoolDepth="50"
+                poolTimeout="5000"
+                queueManager="QM1"
+        />
+
+    </jmsActivationSpec>
+
+
+</server>

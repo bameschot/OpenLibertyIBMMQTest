@@ -1,0 +1,25 @@
+version: '2.1'
+
+services:
+  ibmmq:
+    build: .
+    #https://github.com/ibm-messaging/mq-container/blob/master/docs/developer-config.md
+    image: 'ibmmq-test'
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM1
+      - MQ_APP_PASSWORD=app_1338
+      - MQ_ADMIN_PASSWORD=admin_1337
+    ports:
+      - '9090:9090'
+      - '8161:8161'
+      - '1414:1414'
+      - '9443:9443'
+      - '8091:61616'
+    volumes:
+      - ibmmq:/data/ibmmq-test
+    container_name: ibmmq-test
+
+volumes:
+  ibmmq:
+    driver: local
