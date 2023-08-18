@@ -1,4 +1,4 @@
-package com.ameschot.olibmmqtest.mock;
+package com.ameschot.olibmmqtest.service;
 
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
@@ -18,7 +18,7 @@ import javax.jms.TextMessage;
 
 @Slf4j
 @Singleton
-public class ReceiverOut {
+public class ReceiveTotalService {
 
     @Resource(lookup = "jms/queueCF")
     ConnectionFactory factory;
@@ -44,7 +44,7 @@ public class ReceiverOut {
                 // Receive the message when it arrives
                 final TextMessage consumerTextMessage = (TextMessage) consumerMessage;
                 String payload = consumerTextMessage.getText();
-                log.warn("Received Message {}", consumerTextMessage);
+                log.debug("Received Message {}", consumerTextMessage);
                 return tomMessageUnMarshaller.unmarshall(payload);
             }
             return null;

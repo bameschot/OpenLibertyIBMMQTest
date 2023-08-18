@@ -9,5 +9,9 @@ import java.util.Map;
 @Singleton
 public class AccountService {
     @Getter
-    private Map<String, Float> accounts = new HashMap<>();
+    private final Map<String, Float> accounts = new HashMap<>();
+
+    public Float processAccount(String inAccount, Float inAmount){
+        return accounts.compute(inAccount, (account, sum) -> sum == null ? inAmount : sum + inAmount);
+    }
 }

@@ -1,4 +1,4 @@
-package com.ameschot.olibmmqtest.mock;
+package com.ameschot.olibmmqtest.service;
 
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Singleton
-public class SenderIn {
+public class SendAmountService {
 
     @Resource(lookup="jms/queueCF")
     ConnectionFactory factory;

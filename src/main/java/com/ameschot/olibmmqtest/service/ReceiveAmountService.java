@@ -1,4 +1,4 @@
-package com.ameschot.olibmmqtest.receivers;
+package com.ameschot.olibmmqtest.service;
 
 import com.ameschot.olibmmqtest.common.MessageMarshaller;
 import com.ameschot.olibmmqtest.common.MessageUnMarshaller;
@@ -15,12 +15,11 @@ import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.Message;
 import javax.jms.Queue;
-import javax.jms.QueueConnectionFactory;
 import javax.jms.TextMessage;
 
 @Singleton
 @Slf4j
-public class ReceiverIn {
+public class ReceiveAmountService {
 
     @Resource(lookup = "jms/queueCF")
     ConnectionFactory factory;
@@ -43,9 +42,9 @@ public class ReceiverIn {
 
         try {
 
-            log.warn("MDB Received: {}", message);
+            log.debug("MDB Received: {}", message);
             String outPayload = tomMessageMarshaller.marshall(doWork(timMessageUnMarshaller.unmarshall(((TextMessage) message).getText())));
-            log.warn("MDB Send: {}", outPayload);
+            log.debug("MDB Send: {}", outPayload);
             queueMessageSender.send(outPayload, queueOut, factory);
         } catch (Exception e) {
             log.error("Exception processing MDB in for " + queueOut, e);
@@ -53,9 +52,13 @@ public class ReceiverIn {
     }
 
     TestOutMessage doWork(TestInMessage inMessage) {
+
+        Float newAmount = accountService.processAccount(inMessage.getAccount(), inMessage.getAmount());
+        log.debug("{} account new amount {}",inMessage.getAccount(),newAmount);
+
         TestOutMessage testOutMessage = new TestOutMessage();
         testOutMessage.setAccount(inMessage.getAccount());
-        testOutMessage.setTotal(accountService.getAccounts().compute(inMessage.getAccount(), (account, sum) -> sum == null ? inMessage.getAmount() : sum + inMessage.getAmount()));
+        testOutMessage.setTotal(newAmount);
 
         return testOutMessage;
     }
